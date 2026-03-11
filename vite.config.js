@@ -1,51 +1,59 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import federation from '@originjs/vite-plugin-federation'
-import pkg from './package.json'
+import { defineConfig, loadEnv } from "vite";
+import vue from "@vitejs/plugin-vue";
+import federation from "@originjs/vite-plugin-federation";
+import pkg from "./package.json";
 
-const deps = pkg.dependencies
+const deps = pkg.dependencies;
 
-export default defineConfig({
-  plugins: [
-    vue(),
-    federation({
-      name: 'host',
-      remotes: {
-        hotels: 'http://127.0.0.1:5001/assets/remoteEntry.js',
-        coliving: 'http://127.0.0.1:5002/assets/remoteEntry.js',
-        kost: {
-          external: 'http://127.0.0.1:5003/remoteEntry.js',
-          from: 'webpack',
-          format: 'var'
-        }
-      },
-      shared: {
-        vue: {
-          singleton: true,
-          eager: true,
-          requiredVersion: deps.vue
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), "");
+  const devHost = env.VITE_DEV_HOST || "127.0.0.1";
+  const devPort = Number(env.VITE_DEV_PORT || 5000);
+
+  return {
+    plugins: [
+      vue(),
+      federation({
+        name: "host",
+        remotes: {
+          hotels: env.VITE_REMOTE_HOTEL,
+          // coliving: "http://127.0.0.1:5002/assets/remoteEntry.js",
+          coliving: env.VITE_REMOTE_COLIVING,
+          kost: {
+            // external: "http://127.0.0.1:5003/remoteEntry.js",
+            external: env.VITE_REMOTE_KOST,
+            from: "webpack",
+            format: "var",
+          },
         },
-        pinia: {
-          singleton: true,
-          requiredVersion: deps.pinia
+        shared: {
+          vue: {
+            singleton: true,
+            eager: true,
+            requiredVersion: deps.vue,
+          },
+          pinia: {
+            singleton: true,
+            requiredVersion: deps.pinia,
+          },
+          "vue-router": {
+            singleton: true,
+            requiredVersion: deps["vue-router"],
+          },
         },
-        'vue-router': {
-          singleton: true,
-          requiredVersion: deps['vue-router']
-        }
-      }
-    })
-  ],
-  build: {
-    target: 'esnext'
-  },
-  optimizeDeps: {
-    exclude: ['hotels', 'coliving', 'kost']
-  },
-  server: {
-    host: '127.0.0.1',
-    port: 5000,
-    strictPort: true,
-    cors: true
-  }
-})
+      }),
+    ],
+    build: {
+      target: "esnext",
+    },
+    optimizeDeps: {
+      exclude: ["hotels", "coliving", "kost"],
+    },
+    server: {
+      host: devHost,
+      port: devPort,
+      strictPort: true,
+      cors: true,
+    },
+  };
+});
