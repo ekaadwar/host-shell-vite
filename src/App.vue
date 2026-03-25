@@ -7,6 +7,7 @@
         <RouterLink to="/hotel">Hotel</RouterLink>
         <RouterLink to="/coliving">Coliving</RouterLink>
         <RouterLink to="/kost">Kost</RouterLink>
+        <RouterLink to="/dwp">DWP</RouterLink>
       </nav>
     </header>
 

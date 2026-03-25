@@ -13,21 +13,18 @@
 
     <Suspense>
       <template #default>
-        <KostApp />
-        <!-- <DWP /> -->
+        <DWP />
       </template>
-      <!-- <template #fallback>
+      <template #fallback>
         <div class="fallback">Loading remote kost app...</div>
-      </template> -->
+      </template>
     </Suspense>
   </section>
 </template>
 
 <script setup>
 import { defineAsyncComponent } from "vue";
-
-const KostApp = defineAsyncComponent(() => import("kost/KostApp"));
-// const DWP = defineAsyncComponent(() => import("dwp/DWP"));
+const DWP = defineAsyncComponent(() => import("dwp/loginViewMount"));
 </script>
 
 <style scoped>

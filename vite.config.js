@@ -17,11 +17,14 @@ export default defineConfig(({ mode }) => {
         name: "host",
         remotes: {
           hotels: env.VITE_REMOTE_HOTEL,
-          // coliving: "http://127.0.0.1:5002/assets/remoteEntry.js",
           coliving: env.VITE_REMOTE_COLIVING,
           kost: {
-            // external: "http://127.0.0.1:5003/remoteEntry.js",
             external: env.VITE_REMOTE_KOST,
+            from: "webpack",
+            format: "var",
+          },
+          dwp: {
+            external: "http://localhost:8080/remoteEntry.js",
             from: "webpack",
             format: "var",
           },
@@ -40,6 +43,10 @@ export default defineConfig(({ mode }) => {
             singleton: true,
             requiredVersion: deps["vue-router"],
           },
+          vuetify: {
+            singleton: true,
+            requiredVersion: deps.vuetify,
+          },
         },
       }),
     ],
@@ -47,7 +54,7 @@ export default defineConfig(({ mode }) => {
       target: "esnext",
     },
     optimizeDeps: {
-      exclude: ["hotels", "coliving", "kost"],
+      exclude: ["hotels", "coliving", "kost", "dwp"],
     },
     server: {
       host: devHost,
